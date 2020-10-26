@@ -1,4 +1,4 @@
-package com.mally.ch02.waithater.ui.home;
+package com.mally.ch02.waithater.ui.BusStopInfo;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

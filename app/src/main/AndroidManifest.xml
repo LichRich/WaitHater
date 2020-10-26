@@ -9,6 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WaitHater">
+        <activity android:name=".ui.notifications.SetAlarmActivity"></activity>
+        <activity android:name=".ui.notifications.MainActivity" />
+        <activity android:name=".ui.notifications.BusChoiceActivity" />
+        <activity android:name=".ui.notifications.BusStopChoiceActivity" />
+        <activity android:name=".ui.BusInfo.RouteInfoActivity" />
+        <activity android:name=".ui.BusStopInfo.BusStopActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

@@ -7,15 +7,15 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.mally.ch02.waithater.ui.home.HomeFragment"
+        android:name="com.mally.ch02.waithater.ui.BusStopInfo.AllBusStopsFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_all_bus_stops" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.mally.ch02.waithater.ui.dashboard.DashboardFragment"
+        android:name="com.mally.ch02.waithater.ui.BusInfo.AllRoutesFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_all_routes" />
 
     <fragment
         android:id="@+id/navigation_notifications"
