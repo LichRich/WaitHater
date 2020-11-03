@@ -1,9 +1,11 @@
 package com.mally.ch02.waitHater.ui.notifications;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,20 +18,23 @@ import com.mally.ch02.waitHater.R;
 
 public class NotificationsFragment extends Fragment {
 
-    private NotificationsViewModel notificationsViewModel;
+    private View notification;
+    private ImageView iv_addAlarm;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_notifications, container, false);
-        final TextView textView = root.findViewById(R.id.text_notifications);
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+
+        notification = inflater.inflate(R.layout.fragment_notifications, container, false);
+
+        iv_addAlarm = notification.findViewById(R.id.iv_addAlarm);
+        iv_addAlarm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), SetAlarmActivity.class);
+                startActivity(intent);
             }
         });
-        return root;
+
+        return notification;
     }
 }
