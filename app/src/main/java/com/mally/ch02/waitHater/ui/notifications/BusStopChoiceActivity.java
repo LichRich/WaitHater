@@ -1,10 +1,10 @@
-package com.mally.ch02.waithater.ui.notifications;
+package com.mally.ch02.waitHater.ui.notifications;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.mally.ch02.waithater.R;
+import com.mally.ch02.waitHater.R;
 
 public class BusStopChoiceActivity extends AppCompatActivity {
 

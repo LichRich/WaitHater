@@ -1,4 +1,4 @@
-package com.mally.ch02.waithater;
+package com.mally.ch02.waitHater;
 
 import org.junit.Test;
 

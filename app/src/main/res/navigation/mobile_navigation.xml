@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_busStop">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.mally.ch02.waithater.ui.BusStopInfo.AllBusStopsFragment"
+        android:id="@+id/navigation_busStop"
+        android:name="com.mally.ch02.waitHater.ui.BusStopInfo.AllBusStopsFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_all_bus_stops" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.mally.ch02.waithater.ui.BusInfo.AllRoutesFragment"
+        android:id="@+id/navigation_routes"
+        android:name="com.mally.ch02.waitHater.ui.BusInfo.AllRoutesFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_all_routes" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.mally.ch02.waithater.ui.notifications.NotificationsFragment"
+        android:name="com.mally.ch02.waitHater.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
 </navigation>

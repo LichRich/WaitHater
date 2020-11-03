@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mally.ch02.waithater">
+    package="com.mally.ch02.waitHater">
 
     <application
         android:allowBackup="true"
@@ -9,14 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WaitHater">
-        <activity android:name=".ui.notifications.SetAlarmActivity"></activity>
-        <activity android:name=".ui.notifications.MainActivity" />
-        <activity android:name=".ui.notifications.BusChoiceActivity" />
-        <activity android:name=".ui.notifications.BusStopChoiceActivity" />
-        <activity android:name=".ui.BusInfo.RouteInfoActivity" />
-        <activity android:name=".ui.BusStopInfo.BusStopActivity" />
+        <activity android:name="com.mally.ch02.waitHater.ui.notifications.SetAlarmActivity"></activity>
+        <activity android:name="com.mally.ch02.waitHater.ui.notifications.BusChoiceActivity" />
+        <activity android:name="com.mally.ch02.waitHater.ui.notifications.BusStopChoiceActivity" />
+        <activity android:name="com.mally.ch02.waitHater.ui.BusInfo.RouteInfoActivity" />
+        <activity android:name="com.mally.ch02.waitHater.ui.BusStopInfo.BusStopActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.mally.ch02.waitHater.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

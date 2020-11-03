@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">WaitHater</string>
-    <string name="title_home">버스노선</string>
-    <string name="title_dashboard">정류장</string>
+    <string name="title_home">정류장</string>
+    <string name="title_dashboard">버스</string>
     <string name="title_notifications">알림</string>
+    <string name="bus_stop_search_hint">정류장명 혹은 번호를 입력하세요.</string>
+    <string name="route_search_hint">버스 노선 번호를 입력하세요.</string>
+    <string name="there_is_no_image">이미지가 없습니다.</string>
+    <string name="add_alarm">알람을 추가하려면 누르세요.</string>
+    <string name="set_alarm_time">버스를 타야하는 시각을 입력하세요.</string>
 </resources>
