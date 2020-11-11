@@ -19,6 +19,7 @@
         android:orientation="horizontal">
 
 <!--        Clickable이 달라지도록. 선택되어서 하단 contents width가 변경되면 해당 contents 버튼은 false.-->
+<!--        TAB Host 로 대체 가능할 것으로 보임. Tab Host 구현 후, 각 값이 모두 입력되지 않으면 저장버튼 비활성화.-->
 
         <Button
             android:id="@+id/btn_busStop"
@@ -131,6 +132,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="@string/save"
         android:textSize="20sp"/>
+<!--    if(정류장==null || 버스==null || 알람==null) toast null을 선택해주세요. else 저장 구현.-->
 
 
 
