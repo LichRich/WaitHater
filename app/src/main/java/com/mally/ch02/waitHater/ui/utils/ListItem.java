@@ -3,17 +3,17 @@ package com.mally.ch02.waitHater.ui.utils;
 public class ListItem {
 
     String name;
-    int num;
+    String num;
 
 //    case: busStop list
-    ListItem(String name) {
+    public ListItem(String name) {
         this.name = name;
     }
 
 //    case: bus list
-    ListItem(String name, int num) {
-        this.name = name;
+    public ListItem(String num, String name) {
         this.num = num;
+        this.name = name;
     }
 
     public String getName() {
@@ -24,11 +24,11 @@ public class ListItem {
         this.name = name;
     }
 
-    public int getNum() {
+    public String getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(String num) {
         this.num = num;
     }
 }

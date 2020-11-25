@@ -9,12 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mally.ch02.waitHater.R;
+import com.mally.ch02.waitHater.ui.utils.ListItem;
+
+import java.util.ArrayList;
 
 public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.ViewHolder>{
 
-    private String[][] lists = null;
+    private ArrayList<ListItem> lists = null;
 
-    RoutesListAdapter(String[][] routes_list){
+    RoutesListAdapter(ArrayList<ListItem> routes_list){
         lists = routes_list;
     }
 
@@ -46,8 +49,8 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull RoutesListAdapter.ViewHolder holder, int position) {
-        String num = lists[position][0];
-        String dir = lists[position][1];
+        String num = lists.get(position).getNum();
+        String dir = lists.get(position).getName();
 
         holder.bus_num.setText(num);
         holder.bus_dir.setText(dir);
@@ -55,6 +58,6 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return lists.length;
+        return lists.size();
     }
 }

@@ -10,7 +10,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WaitHater">
+        android:theme="@style/Theme.WaitHater"
+        android:usesCleartextTraffic="true">
         <activity android:name="com.mally.ch02.waitHater.ui.notifications.SetAlarmActivity"></activity>
         <activity android:name="com.mally.ch02.waitHater.ui.notifications.BusChoiceActivity" />
         <activity android:name="com.mally.ch02.waitHater.ui.notifications.BusStopChoiceActivity" />

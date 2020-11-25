@@ -1,94 +1,241 @@
 package com.mally.ch02.waitHater.ui.BusInfo;
 
+import android.net.TrafficStats;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mally.ch02.waitHater.R;
 import com.mally.ch02.waitHater.ui.utils.ListItem;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
-import java.net.URL;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 public class AllRoutesFragment extends Fragment {
 
-//    TAG
+    /*
+    *
+    * TAG
+    *
+    * */
     private final String TAG = "ALL_ROUTES_FRAGMENT";
-
-//    Layout Components
+    /*
+    *
+    * Layout Components
+    *
+    * */
     private EditText et_routes;
     private RecyclerView rv_routes;
-
-//    API
+    /*
+     *
+     * RecyclerView Adapter
+     *
+     * */
+    RoutesListAdapter adapter;
+    /*
+    *
+    * Setting API url
+    *
+    * */
     private final String url_main = "http://openapitraffic.daejeon.go.kr/api/rest";
-    private final String api_busRouteInfo = "/busRouteInfo", api_stationInfo = "/stationinfo", api_busPosInfo = "/busposinfo", api_arrive = "/arrive";
-    private final String[] route_operations = {"/getStaionByRoute", "/getStaionByRouteAll", "/getRouteInfo", "/getRouteInfoAll"};
-    private final String[] station_operations = {"/getStationById", "/getStationByUid"};
-    private final String busPos_operation = "/getBusPosByRtid";
-    private final String[] arrive_operations = {"/getArrInfoByStopID", "/getArrInfoByUid"};
+    private final String url_key = "?serviceKey=cC0rVYquPDL%2Bu44mxQ0ds5EabhA44uysOYBPVwBa0%2FeoGxSfKQgQCP4eCys0OB6VU6LUc9Ty2e%2BaBw7w61QB4g%3D%3D";
+    private final String url_param = "&reqPage=";
+    /*
+     *
+     * Handler for using Network
+     *
+     * */
+    private static Handler mHandler;
+    private static final int THREAD_ID = 10000;
 
-//    API Key
-    private final String key = "?serviceKey=cC0rVYquPDL%2Bu44mxQ0ds5EabhA44uysOYBPVwBa0%2FeoGxSfKQgQCP4eCys0OB6VU6LUc9Ty2e%2BaBw7w61QB4g%3D%3D";
-//    뒤에 ID 값이 붙어야하는 operation의 경우, &busRouteId=30300001 과 같은 형식을 붙인다.
-
-//    For Data
-    private ListItem bus;
-    private String[][] num_dir = new String[122][3];
-    private boolean[] using_tags = new boolean[3];  //[0]=ROUTE_NO, [1]=TURN_STOP_ID, [2]=ROUTE_TP
-    private String bus_num = null, bus_type = null, bus_dir = null;
-
-    private DashboardViewModel dashboardViewModel;
+    public AllRoutesFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_all_routes, container, false);
+        View allRoutes = inflater.inflate(R.layout.fragment_all_routes, container, false);
+        TrafficStats.setThreadStatsTag(THREAD_ID);
 
-        StrictMode.enableDefaults();
+        et_routes = (EditText) allRoutes.findViewById(R.id.et_routes);
+        rv_routes = (RecyclerView) allRoutes.findViewById(R.id.rv_routes);
+        rv_routes.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        String getAllRoutes_1 = url_main + api_busRouteInfo + route_operations[3] + key + "&reqPage=1";
-        try {
-            URL url = new URL(getAllRoutes_1);
+        return allRoutes;
+    }
 
-            XmlPullParserFactory parserFactory = XmlPullParserFactory.newInstance();
-            XmlPullParser parser = parserFactory.newPullParser();
-
-            parser.setInput(url.openStream(), null);
-
-            int parserEvent = parser.getEventType();
-            Log.d(TAG, "onCreateView: Start Parsing...!!!");
-
-            while(parserEvent != XmlPullParser.END_DOCUMENT) {
-                switch (parserEvent) {
-                    case XmlPullParser.START_TAG:
-                        if(parser.getName().equals("ROUTE_NO")) using_tags[0] = true;
-                        else if(parser.getName().equals("TURN_STOP_ID")) using_tags[1] = true;
-                        else if(parser.getName().equals("ROUTE_TP")) using_tags[2] = true;
-                        break;
-
-                    case XmlPullParser.TEXT:
-//                        if(using_tags[0])
-                }
-
+    @Override
+    public void onStart() {
+        super.onStart();
+        mHandler =new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                super.handleMessage(msg);
+                ArrayList<ListItem> itemList = (ArrayList<ListItem>) msg.obj;
+                adapter = new RoutesListAdapter(itemList);
+                rv_routes.setAdapter(adapter);
             }
+        };
 
-        } catch (Exception e) {
+        class AllRoutesThread extends Thread {
+
+            final Handler h = mHandler;
+
+            @Override
+            public void run() {
+                Message msg = h.obtainMessage();
+                msg.obj = getInfoFromAPI(url_main, url_key, url_param);
+
+                h.sendMessage(msg);
+            }
+        }
+
+        AllRoutesThread art = new AllRoutesThread();
+        Thread th = new Thread(art);
+        th.start();
+
+    }
+
+    /*
+     *
+     * function: get information from API.
+     *
+     *  */
+    private ArrayList<ListItem> getInfoFromAPI(String mUrl, String key, String param) {
+        ArrayList<String> numbers = new ArrayList<>(), starts = new ArrayList<>(), turns = new ArrayList<>();
+        HashMap<String, String> stations = new HashMap<>();
+        ArrayList<ListItem> allRoutes = new ArrayList<>();
+
+        /*
+         * total size of all routes pages is 2
+         * */
+        String url_op1 = "/busRouteInfo/getRouteInfoAll";
+        String url_allRoutes = mUrl + url_op1 + key + param;
+
+        /*
+         * total size of all stations pages is 3
+         * */
+        String url_op2 = "/busRouteInfo/getStaionByRouteAll";
+        String url_allStations = mUrl + url_op2 + key + param;
+
+        /*
+         * builder to get information about route number from API
+         * */
+        for(int i = 1 ; i <= 2 ; i++){
+
+            DocumentBuilderFactory ar_factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder ar_builder = null;
+
+            try {
+                ar_builder = ar_factory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            }
+            Document ar_doc = null;
+            try {
+                ar_doc = ar_builder.parse(url_allRoutes+i);
+            } catch (IOException | SAXException e) {
+                e.printStackTrace();
+            }
+            //parsing tag = itemList
+            ar_doc.getDocumentElement().normalize();
+            NodeList itemList1 = ar_doc.getElementsByTagName("itemList");
+
+            //get routeNumber, dirId from XML
+            for(int j = 0 ; j < itemList1.getLength() ; j++) {
+                Node node = itemList1.item(j);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String type;
+                    switch (getTagValue("ROUTE_TP", element)) {
+                        case "1 ":
+                            type = "급행";
+                            break;
+                        case "5 ":
+                            type = "마을";
+                            break;
+                        case "6 ":
+                            type = "첨단";
+                            break;
+                        default:
+                            type = "";
+                            break;
+                    }
+                    numbers.add(type + getTagValue("ROUTE_NO", element));
+                    starts.add(getTagValue("START_NODE_ID", element));
+                    turns.add(getTagValue("TURN_NODE_ID", element));
+                }
+            }
 
         }
 
-        return root;
+        /*
+         * builder to get information about station name from API
+         * */
+        for(int i = 1 ; i <= 3 ; i++) {
+
+            DocumentBuilderFactory as_factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder as_builder = null;
+
+            try {
+                as_builder = as_factory.newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                e.printStackTrace();
+            }
+            Document as_doc = null;
+            try {
+                as_doc = as_builder.parse(url_allStations+i);
+            } catch (IOException | SAXException e) {
+                e.printStackTrace();
+            }
+            //parsing tag = itemList
+            as_doc.getDocumentElement().normalize();
+            NodeList itemList2 = as_doc.getElementsByTagName("itemList");
+
+            //get stationId, stationName from XML
+            for(int j = 0 ; j < itemList2.getLength() ; j++) {
+                Node node = itemList2.item(j);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    stations.put(getTagValue("BUS_NODE_ID", element), getTagValue("BUSSTOP_NM", element));
+                }
+            }
+
+        }
+
+        for(int temp = 0 ; temp < numbers.size() ; temp++) {
+            String name = stations.get(starts.get(temp)) + " ~ " + stations.get(turns.get(temp));
+            ListItem item = new ListItem(numbers.get(temp), name);
+            allRoutes.add(item);
+        }
+
+        return allRoutes;
     }
+
+    private String getTagValue(String tag, Element e) {
+        NodeList list = e.getElementsByTagName(tag).item(0).getChildNodes();
+        Node v = (Node) list.item(0);
+        if(v == null) return null;
+        return v.getNodeValue();
+    }
+
 }
