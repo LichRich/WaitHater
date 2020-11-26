@@ -15,10 +15,16 @@ import java.util.ArrayList;
 
 public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.ViewHolder>{
 
-    private ArrayList<ListItem> lists = null;
+    private final ArrayList<ListItem> lists;
+    private final OnItemClickListener onItemClickListener;
 
-    RoutesListAdapter(ArrayList<ListItem> routes_list){
+    RoutesListAdapter(ArrayList<ListItem> routes_list, OnItemClickListener itemClick){
         lists = routes_list;
+        onItemClickListener = itemClick;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     @NonNull
@@ -30,7 +36,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private TextView bus_num, bus_dir;
+        private final TextView bus_num, bus_dir;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -43,7 +49,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.Vi
 
         @Override
         public void onClick(View view) {
-
+            onItemClickListener.onItemClick(getAdapterPosition());
         }
     }
 

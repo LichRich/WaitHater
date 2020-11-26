@@ -6,4 +6,28 @@
     android:layout_height="match_parent"
     tools:context=".ui.BusInfo.RouteInfoActivity">
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/layout_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="center"
+        app:tabMode="fixed"
+        app:tabTextColor="#000000"
+        app:tabSelectedTextColor="@color/design_default_color_primary"
+        app:tabIndicatorColor="@color/design_default_color_primary"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ScrollView
+        android:id="@+id/scroll_routeInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/layout_tab">
+
+        <com.mally.ch02.waitHater.ui.BusInfo.RouteInfoViewPager
+            android:id="@+id/pager_routeInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

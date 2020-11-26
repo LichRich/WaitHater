@@ -1,5 +1,6 @@
 package com.mally.ch02.waitHater.ui.BusInfo;
 
+import android.content.Intent;
 import android.net.TrafficStats;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,13 +27,16 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-public class AllRoutesFragment extends Fragment {
+public class AllRoutesFragment extends Fragment{
 
     /*
     *
@@ -68,6 +72,13 @@ public class AllRoutesFragment extends Fragment {
      * */
     private static Handler mHandler;
     private static final int THREAD_ID = 10000;
+    /*
+    *
+    * data for intent to RouteInfoActivity
+    *
+    * */
+    private ArrayList<String> idList;
+    private RoutesListAdapter.OnItemClickListener onItemClickListener;
 
     public AllRoutesFragment() {}
 
@@ -80,6 +91,12 @@ public class AllRoutesFragment extends Fragment {
         rv_routes = (RecyclerView) allRoutes.findViewById(R.id.rv_routes);
         rv_routes.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        onItemClickListener = position -> {
+            Intent intent = new Intent(getContext(), RouteInfoActivity.class);
+            intent.putExtra("routeId", idList.get(position));
+            startActivity(intent);
+        };
+
         return allRoutes;
     }
 
@@ -91,7 +108,7 @@ public class AllRoutesFragment extends Fragment {
             public void handleMessage(@NonNull Message msg) {
                 super.handleMessage(msg);
                 ArrayList<ListItem> itemList = (ArrayList<ListItem>) msg.obj;
-                adapter = new RoutesListAdapter(itemList);
+                adapter = new RoutesListAdapter(itemList, onItemClickListener);
                 rv_routes.setAdapter(adapter);
             }
         };
@@ -122,6 +139,7 @@ public class AllRoutesFragment extends Fragment {
      *  */
     private ArrayList<ListItem> getInfoFromAPI(String mUrl, String key, String param) {
         ArrayList<String> numbers = new ArrayList<>(), starts = new ArrayList<>(), turns = new ArrayList<>();
+        idList = new ArrayList<>();
         HashMap<String, String> stations = new HashMap<>();
         ArrayList<ListItem> allRoutes = new ArrayList<>();
 
@@ -166,14 +184,14 @@ public class AllRoutesFragment extends Fragment {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String type;
-                    switch (getTagValue("ROUTE_TP", element)) {
-                        case "1 ":
+                    switch (getTagValue("ROUTE_TP", element).trim()) {
+                        case "1":
                             type = "급행";
                             break;
-                        case "5 ":
+                        case "5":
                             type = "마을";
                             break;
-                        case "6 ":
+                        case "6":
                             type = "첨단";
                             break;
                         default:
@@ -181,6 +199,7 @@ public class AllRoutesFragment extends Fragment {
                             break;
                     }
                     numbers.add(type + getTagValue("ROUTE_NO", element));
+                    idList.add(getTagValue("ROUTE_CD", element));
                     starts.add(getTagValue("START_NODE_ID", element));
                     turns.add(getTagValue("TURN_NODE_ID", element));
                 }
@@ -224,9 +243,10 @@ public class AllRoutesFragment extends Fragment {
 
         for(int temp = 0 ; temp < numbers.size() ; temp++) {
             String name = stations.get(starts.get(temp)) + " ~ " + stations.get(turns.get(temp));
-            ListItem item = new ListItem(numbers.get(temp), name);
+            ListItem item = new ListItem(numbers.get(temp), name, idList.get(temp));
             allRoutes.add(item);
         }
+        Collections.sort(allRoutes, (item1, item2) -> item1.getNum().compareTo(item2.getNum()));
 
         return allRoutes;
     }
