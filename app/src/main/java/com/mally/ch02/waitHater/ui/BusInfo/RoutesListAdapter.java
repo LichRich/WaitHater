@@ -18,7 +18,7 @@ public class RoutesListAdapter extends RecyclerView.Adapter<RoutesListAdapter.Vi
     private final ArrayList<ListItem> lists;
     private final OnItemClickListener onItemClickListener;
 
-    RoutesListAdapter(ArrayList<ListItem> routes_list, OnItemClickListener itemClick){
+    public RoutesListAdapter(ArrayList<ListItem> routes_list, OnItemClickListener itemClick){
         lists = routes_list;
         onItemClickListener = itemClick;
     }

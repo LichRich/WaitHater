@@ -78,6 +78,7 @@ public class AllRoutesFragment extends Fragment{
     *
     * */
     private ArrayList<String> idList;
+    private ArrayList<ListItem> allRouteList;
     private RoutesListAdapter.OnItemClickListener onItemClickListener;
 
     public AllRoutesFragment() {}
@@ -93,7 +94,7 @@ public class AllRoutesFragment extends Fragment{
 
         onItemClickListener = position -> {
             Intent intent = new Intent(getContext(), RouteInfoActivity.class);
-            intent.putExtra("routeId", idList.get(position));
+            intent.putExtra("routeId", allRouteList.get(position).getId());
             startActivity(intent);
         };
 
@@ -141,7 +142,7 @@ public class AllRoutesFragment extends Fragment{
         ArrayList<String> numbers = new ArrayList<>(), starts = new ArrayList<>(), turns = new ArrayList<>();
         idList = new ArrayList<>();
         HashMap<String, String> stations = new HashMap<>();
-        ArrayList<ListItem> allRoutes = new ArrayList<>();
+        allRouteList = new ArrayList<>();
 
         /*
          * total size of all routes pages is 2
@@ -244,11 +245,11 @@ public class AllRoutesFragment extends Fragment{
         for(int temp = 0 ; temp < numbers.size() ; temp++) {
             String name = stations.get(starts.get(temp)) + " ~ " + stations.get(turns.get(temp));
             ListItem item = new ListItem(numbers.get(temp), name, idList.get(temp));
-            allRoutes.add(item);
+            allRouteList.add(item);
         }
-        Collections.sort(allRoutes, (item1, item2) -> item1.getNum().compareTo(item2.getNum()));
+        Collections.sort(allRouteList, (item1, item2) -> item1.getNum().compareTo(item2.getNum()));
 
-        return allRoutes;
+        return allRouteList;
     }
 
     private String getTagValue(String tag, Element e) {
